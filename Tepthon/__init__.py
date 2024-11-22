@@ -3,7 +3,7 @@ import time
 import sys
 import Tepthon.core.ubclient
 from .config import Var
-from .core.client import JmthonClient
+from .core.client import TepthonClient
 from .core.session import both_session
 from .core.logger import *
 from database import jmdB, JmdB
@@ -13,14 +13,14 @@ start_time = time.time()
 bot_token = JmdB.get_config("BOT_TOKEN")
 
 
-jmubot = jmthon_bot = JmthonClient(
+jmubot = jmthon_bot = TepthonClient(
         session=both_session(Var.SESSION, LOGS),
         app_version=version,
         device_model="Tepthon",
        )
 
 
-tgbot = asst = JmthonClient("Tgbot", bot_token=bot_token)
+tgbot = asst = TepthonClient("Tgbot", bot_token=bot_token)
 
 del bot_token
 
