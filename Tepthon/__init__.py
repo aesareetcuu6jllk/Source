@@ -1,7 +1,7 @@
 import logging
 import time
 import sys
-import jmthon.core.ubclient
+import Tepthon.core.ubclient
 from .config import Var
 from .core.client import JmthonClient
 from .core.session import both_session
