@@ -19,7 +19,7 @@ DEVLIST = [1260465030]
 def inline_pic(get=False):
     INLINE_PIC = JmdB.get_key("INLINE_PIC")
     if (INLINE_PIC is None) or get:
-        return "https://t.me/jajahahahh/3
+        return "https://envs.sh/Gsz.jpg"
     elif INLINE_PIC:
         return INLINE_PIC
 
