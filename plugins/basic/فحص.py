@@ -33,7 +33,7 @@ alive_txt = """
 **سورس تيبثون يعمـل بنجـاح .. ✅**
 
   ❃ إصدار تيبثون - {}
-  ❃ إصدار التليليثون - {}
+ ❃ إصدار التليليثون - {}
 """
 
 PING_PIC = JmdB.get_key("PING_PIC") or "https://t.me/Tepthon/12?single"
@@ -65,7 +65,7 @@ async def alive_func(e):
         inline = True
     OWNER_NAME = jmubot.me.first_name
 
-    pic = jmdB.get_key("ALIVE_PIC") or "https://t.me/Tepthon/12?single"
+    pic = jmdB.get_key("ALIVE_PIC") or "https://envs.sh/GsK.jpg"
     if isinstance(pic, list):
         pic = choice(pic)
     uptime = time_formatter((time.time() - start_time) * 1000)
@@ -78,7 +78,7 @@ async def alive_func(e):
         )
 
         if _e := jmdB.get_key("ALIVE_EMOJI"):
-            als = als.replace("❃", _e)
+            als = als.replace("𖠇", _e)
     else:
         parse = markdown
         als = alive_1.format(
@@ -90,7 +90,7 @@ async def alive_func(e):
                 )
 
         if a := jmdB.get_key("ALIVE_EMOJI"):
-            als = als.replace("❃", a)
+            als = als.replace("𖠇", a)
     if pic:
         try:
             await e.reply(
@@ -126,7 +126,7 @@ async def alive_func(e):
 
 @in_pattern("alive", owner=True)
 async def inline_alive(e):
-    pic = jmdB.get_key("ALIVE_PIC") or "https://t.me/Tepthon/12?single"
+    pic = jmdB.get_key("ALIVE_PIC") or "https://envs.sh/Gsz.jpg"
     if isinstance(pic, list):
         pic = choice(pic)
     uptime = time_formatter((time.time() - start_time) * 1000)
