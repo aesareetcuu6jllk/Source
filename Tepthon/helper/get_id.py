@@ -9,7 +9,7 @@
 
 from telethon.utils import pack_bot_file_id
 
-from Tepthon import Tepthon
+from Tepthon import Tepthon_cmd
 from Tepthon.core.logger import logging
 
 from ..core.managers import edit_delete, edit_or_reply
