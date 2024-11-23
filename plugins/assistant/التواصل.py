@@ -60,12 +60,12 @@ async def on_new_msg(event):
                     BTTS.append(Button.url(get_display_name(TAHC_), uri))
                 except Exception as er:
                     LOGS.exception(
-                        f"حدث خطأ أثنـاء الاشتراك الاجباري للبوت المساعد\n {chat} \n{er}")
+                        f"حدث خطأ أثنـاء الاشتراك الإجبـاري للبوت المساعد\n {chat} \n{er}")
         if MSG and BTTS:
             return await event.reply(MSG, buttons=BTTS)
     xx = await event.forward_to(OWNER_ID)
     if event.fwd_from:
-        await xx.reply(f"**❃ توجيه من المستخدم** {inline_mention(event.sender)} [`{event.sender_id}`]")
+        await xx.reply(f"**◙ توجيه من المستخدم** {inline_mention(event.sender)} [`{event.sender_id}`]")
     val = JmdB.get_key("BOTCHAT") or {}
     val[xx.id] = who
     JmdB.set_key("BOTCHAT", val)
@@ -85,7 +85,7 @@ async def on_out_mssg(event):
             k = await tgbot.get_entity(to_user)
             photu = await event.client.download_profile_photo(k.id)
             await event.reply(
-                f"❃ **الأسم :** {get_display_name(k)}\n❃ **الايدي :** `{k.id}`\n❃ **رابط الحساب :** {inline_mention(k)}",
+                f"◙ **الاسم :** {get_display_name(k)}\n⎆ **الأيدي :** `{k.id}`\n⎆ **رابط الحساب :** {inline_mention(k)}",
                 file=photu,
             )
             if photu:
