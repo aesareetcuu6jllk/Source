@@ -1,13 +1,13 @@
 """
-❃ `{i}تحميل صوتي` <(رابط يوتيوب/او أي رابط)>
+◙ `{i}تحميل صوتي` <(رابط يوتيوب/او أي رابط)>
    لـ تحميل الملف بشكل ملف صوتي في التليجرام، يمكنك وضع رابط أي منصة
 
 
-❃ `{i}تحميل فيد` <(رابط يوتيوب/او أي رابط)>
+◙ `{i}تحميل فيد` <(رابط يوتيوب/او أي رابط)>
    لـ تحميل الملف بشكل فيديو في التليجرام، يمكنك وضع رابط أي منصة
 
 
-❃ `{i}صوتي` <(عنولن)>
+◙ `{i}صوتي` <(عنوان)>
    لـ تحميل الملف بشكل ملف صوتي في التليجرام من خلال العنوان فقط بدون رابط
 
 """
@@ -55,7 +55,7 @@ async def vidown(event):
     url = event.pattern_match.group(1)
     print(url)
     if not url:
-        return await jmbot.eor("⎆ يجب عليك وضع رابط لتحميل الفيد")
+        return await jmbot.eor("⎆ يجب عليك وضع رابط لتحميل الفيديـو")
     try:
         await is_url_work(url)
     except BaseException:
@@ -65,7 +65,7 @@ async def vidown(event):
 
 @Tepthon_cmd(pattern="صوتي( (.*)|$)")
 async def sotea(event):
-    jmbot = await event.eor("⎆ جار التحميل يرجى الانتظار قليلًا")
+    jmbot = await event.eor("⎆ جـاري التحميل يرجى الانتظار قليلًا")
     ytd["format"] = "bestaudio"
     ytd["outtmpl"] = "%(id)s.m4a"
     ytd["postprocessors"].insert(
@@ -78,11 +78,11 @@ async def sotea(event):
     )
     query = event.pattern_match.group(2) if event.pattern_match.group(1) else None
     if not query:
-        return await jmbot.eor("**⎆ يجب عليك تحديد ما تريد تحميله اكتب عنوان مع الامر**")
+        return await jmbot.eor("**⎆ يجب عليك تحديد ما تريد تحميله اكتب عنوان مع الأمـر**")
     url = get_yt_link(query, ytd)
     if not url:
         return await jmbot.edit("**⎆ لم يتم العثور على الفيديو اكتب عنوان مفصل بشكل صحيح**")
-    await jmbot.eor("**⎆ جاري تحميل الملف الصوتي انتظـر قليلا**")
+    await jmbot.eor("**⎆ جاري تحميل الملف الصوتي انتظـر قليـلًا....**")
     await download_yt(jmbot, url, ytd)
 
 
