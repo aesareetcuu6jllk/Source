@@ -25,7 +25,7 @@ def get_help_buttons():
             ]
     row_2 = [
             Button.inline("• أوامر التسلية •", data="get_fun_"),
-            Button.inline("• أوامر الكروبات •", data="get_group_")
+            Button.inline("• أوامر المجمـوعات •", data="get_group_")
             ]
     if InlinePlugin:
         row_2.append(Button.inline("• أوامر الأنلاين •", data="inlone"))
@@ -166,10 +166,10 @@ async def help_func(moh):
         _, count = count.split("|")
     count = int(count) if count else 0
     _strings = {
-        "basic": "**⎆ مجموعة المساعدة: [أضغط هنا](t.me/Tepthon_Support)**\n**❃ مالك الحساب هو: {}.\n❃ عدد القوائم الموجودة: {}**",
-        "account": "**⎆ مجموعة المساعدة: [أضغط هنا](t.me/Tepthon_Support)**\n**❃ مالك الحساب هو: {}.\n❃ عدد قوائم الموجودة: {}**",
-        "fun": "**⎆ مجموعة المساعدة: [أضغط هنا](t.me/Tepthon_Support)**\n**❃ مالك الحساب هو: {}.\n❃ عدد قوائم الموجودة: {}**",
-        "group":"**⎆ مجموعة المساعدة: [أضغط هنا](t.me/Tepthon_Support)**\n**❃ مالك الحساب هو: {}.\n❃ عدد قوائم الموجودة: {}**",
+        "basic": "**⎆ مجموعة المساعدة: [اضغط هنا](t.me/Tepthon_Support)**\n**❃ مالك الحساب هو: {}.\n❃ عدد القوائم الموجودة: {}**",
+        "account": "**⎆ مجموعة المساعدة: [اضغط هنا](t.me/Tepthon_Support)**\n**❃ مالك الحساب هو: {}.\n❃ عدد قوائم الموجودة: {}**",
+        "fun": "**⎆ مجموعة المساعدة: [اضغط هنا](t.me/Tepthon_Support)**\n**❃ مالك الحساب هو: {}.\n❃ عدد قوائم الموجودة: {}**",
+        "group":"**⎆ مجموعة المساعدة: [اضغط هنا](t.me/Tepthon_Support)**\n**❃ مالك الحساب هو: {}.\n❃ عدد قوائم الموجودة: {}**",
     }
     text = _strings.get(key, "").format(jmubot.full_name, len(plugs))
     await moh.edit(text, buttons=page_num(count, key), link_preview=False)
@@ -177,7 +177,7 @@ async def help_func(moh):
 @callback(data="open", owner=True)
 async def opner(event):
     await event.edit(
-        "**⎆ القائمة الرئيسية لـ أوامر سورس جمثون**\n**❃ مالك الحساب هو: {}.\n❃ عدد القوائم الموجودة: {}**".format( 
+        "**⎆ القائمة الرئيسية لـ أوامر سورس تيبـثون**\n**⎆ مالك الحساب هو: {}.\n⎆ عدد القوائم الموجودة: {}**".format( 
             jmubot.full_name,
             len(PLUGINS),
         ),
