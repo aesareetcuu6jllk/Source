@@ -57,9 +57,9 @@ def callback(data=None, from_users=[], admins=False, owner=False, **kwargs):
             if admins and not await admin_check(event):
                 return
             if from_users and event.sender_id not in from_users:
-                return await event.answer("هذه ليست لك نصب جمثون بنفسك من @Tepthon", alert=True)
+                return await event.answer("هذه ليست لك نصب تيبثون بنفسك من @Tepthon", alert=True)
             if owner and event.sender_id not in owner_and_sudos():
-                return await event.answer(f"هذا هو بوت جمثون الخاص بـ {OWNER} تابعنا @Tepthon")
+                return await event.answer(f"هذا هو بوت تيبثون الخاص بـ {OWNER} تابعنا @Tepthon")
             try:
                 await func(event)
             except Exception as er:
