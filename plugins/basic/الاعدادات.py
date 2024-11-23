@@ -47,7 +47,7 @@ async def update_Tepthon(e):
     cmd = e.pattern_match.group(1).strip()
     if cmd and ("سريع" in cmd or "خفيف" in cmd):
         await bash("git pull -f")
-        await xx.edit("**⌔∮ جاري التحديـث الخفيف يرجى الانتظار**")
+        await xx.edit("**⎆ جاري التحديـث الخفيف يرجى الانتظــار**")
         os.execl(sys.executable, sys.executable, "-m", "Tepthon")
     remote_url = repo.get_remote_url()
     if remote_url.endswith(".git"):
@@ -60,7 +60,7 @@ async def update_Tepthon(e):
             link_preview=False,
         )
     msg = await xx.eor(
-        f'<strong>جاري تحديث سورس تيبثون يرجى الانتظار قليلا</strong>',
+        f'<strong>جاري تحديث سورس تيبثون يرجى الانتظار قليلًا</strong>',
         parse_mode="html",
         link_preview=False,
     )
