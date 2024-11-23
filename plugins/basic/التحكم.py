@@ -68,12 +68,12 @@ async def remov_sudo(e):
         return await e.eor("**يجب عليك الرد على المستخدم أو وضعه يوزره مع الأمر**", time=5)
     name = inline_mention(name) if name else f"`{id_}`"
     if not is_sudo(id_):
-        mmm = f"**⎆ المستخدم: {name}\n◙ ليس من ضمن المتحكمين أصلا**..."
+        mmm = f"**⎆ المستخدم: {name}\n◙ ليس من ضمن المتحكمين أصـلًا..**..."
     else:
         key = get_sudos()
         key.remove(id_)
         jmdB.set_key("SUDOS", key)
-        mmm = f"**◙ المستخدم: {name}\n◙ تم حذفه من قائمة المتحكمين**"
+        mmm = f"**◙ المستخدم: {name}\n◙ تم حذفه من قائمة المتحـكمين**"
     await e.eor(mmm, time=5)
 
 
