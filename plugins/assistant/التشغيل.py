@@ -22,7 +22,7 @@ async def get_stored_file(event, hash):
     try:
         msg = await tgbot.get_messages(JmdB.get_config("LOG_CHAT"), ids=msg_id)
     except Exception as er:
-        LOGS.warning(f"حدث خطأ اثناء تخزين الملف: {er}")
+        LOGS.warning(f"حدث خطأ أثناء تخزين الملف: {er}")
         return
     if not msg:
         return await tgbot.send_message(
@@ -111,8 +111,8 @@ async def Tepthon_handler(event):
             msg = _starts
         else:
             if JmdB.get_key("PMBOT"):
-                ok = "❃ يمكنك التواصل مع صاحب البوت من هنا أرسل رسالتك وأنتظر الرد ..."
-            msg = f"مـرحبا بـك {mention} ، هذا هو البوت المساعد لـ {me}\n\n{ok}"
+                ok = "⎆ يمكنك التواصل مع صاحب البوت من هنا أرسل رسالتك وانتظـر الرد ..."
+            msg = f"مرحبًـا بـك {mention} ، هذا هو البوت المساعد لـ {me}\n\n{ok}"
         await event.reply(
             msg.format(me=me, mention=mention),
             file=JmdB.get_key("STARTMEDIA"),
@@ -163,7 +163,7 @@ async def Tepthon(event):
 @callback("stat", owner=True)
 async def bot_stat(event):
     ok = len(JmdB.get_key("BOT_USERS") or [])
-    msg = """حـالة البـوت المساعـد من جـمثون
+    msg = """حـالة البـوت المساعـد من تيبثـون
 عدد المستخدمين:  {}""".format(
         ok,
     )
@@ -177,14 +177,14 @@ async def bdcast_msg(event):
     await event.edit(f"**⎆ الأذاعة إلى {total} من المستخدمين**.")
     async with event.client.conversation(event.sender_id) as conv:
         await conv.send_message(
-            "**⎆ الآن أرسل الرسالة التي تريد عمل أذاعة لها لمستخدمي بوتك.**\nأرسل `الغاء` لألغاء الأذاعة.",
+            "**⎆ الآن أرسل الرسالة التي تريد عمل إذاعـة لها لمستخدمي بوتك.**\nأرسل `الغاء` لألغاء الأذاعة.",
         )
         response = await conv.get_response()
         if response.message == "الغاء":
             return await conv.send_message("**⎆ تم الغاء الأذاعة بنجاح**")
         success = 0
         fail = 0
-        await conv.send_message(f"**⎆ سيتم الأذاعة إلى {total} من المستخدمين**")
+        await conv.send_message(f"**⎆ ستتم الإذاعة إلى {total} من المستخدمين**")
         start = datetime.now()
         for i in KeySet.get():
             try:
@@ -196,10 +196,10 @@ async def bdcast_msg(event):
         time_taken = (end - start).seconds
         await conv.send_message(
             f"""
-**❃ تم الأذاعة في {time_taken} من الثواني.**
-**❃ عدد المستخدمين: {total}**
-**❃ تم الاذاعة إلى ** : `{success}`
-**❃ فشل الاذاعة إلى** : `{fail}`""",
+**⎆ تم الإذاعة في {time_taken} من الثواني.**
+**⎆ عدد المستخدمين: {total}**
+**⎆ تم الإذاعة إلى ** : `{success}`
+**⎆ فشل الاذاعة إلى** : `{fail}`""",
         )
 
 
@@ -244,7 +244,7 @@ async def timezone_moh(event):
         themssg = response.message.message
         if themssg == "الغاء":
             return await conv.send_message(
-                "تم الالغاء بنجاح",
+                "تم الإلغاء بنجاح",
                 buttons=get_back_button("mainmenu"),
             )
         try:
@@ -256,6 +256,6 @@ async def timezone_moh(event):
             )
         except BaseException:
             await conv.send_message(
-                "**⎆ حصل خطأ في المنطقة الزمنية حاول مجددًا بشكل صحيح**",
+                "**⎆ حـدث خطأ في المنطقة الزمنية حاول مجددًا بشكل صحيح**",
                 buttons=get_back_button("mainmenu"),
             )
