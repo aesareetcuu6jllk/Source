@@ -43,7 +43,7 @@ async def autoname(event):
         name = f"{HM}{ZEDT}"
         LOGS.info(name)
         try:
-            await event.eor(functions.account.UpdateProfileRequest(first_name=name))
+            await Tepthon_cmd (functions.account.UpdateProfileRequest(first_name=name))
         except FloodWaitError as ex:
             LOGS.warning(str(ex))
             await asyncio.sleep(ex.seconds)
