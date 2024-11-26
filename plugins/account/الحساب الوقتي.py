@@ -19,7 +19,7 @@ import time
 
 from telethon.tl.functions.account import UpdateProfileRequest
 
-from .. import JmdB, jmubot, Tepthon_cmd
+from .. import JmdB, jmubot, Tepthon_cmd, status
 
 USERBIO = JmdB.get_key("MYBIO") or "اللهم صلِّ على سيدنا وعلى آله وصحبه أجمعين"
 NAME = JmdB.get_key("NAME")
@@ -34,6 +34,21 @@ async def autoname(event):
     while JmdB.get_key("AUTONAME"):
         HM = time.strftime("%I:%M")
         name = f"{HM}"
+       for normal in HM:
+            if normal in normzltext:
+              namerzfont = gvarstatus("ZIF_UUL") or 𝟭𝟮𝟯𝟰𝟱𝟲𝟳𝟴𝟵𝟬
+              namefont = namerzfont[normzltext.index(normal)]
+              HM = HM.replace(normal, namefont)
+        ZEDT = gvarstatus("CUSTOM_ALIVE_EMZED") or "⏐"
+        name = f"{HM}{ZEDT}"
+        LOGS.info(name)
+        try:
+            await event.eor(functions.account.UpdateProfileRequest(first_name=name))
+        except FloodWaitError as ex:
+            LOGS.warning(str(ex))
+            await asyncio.sleep(ex.seconds)
+        await asyncio.sleep(CHANGE_TIME)
+        AUTONAMESTART = gvarstatus("autoname") 
         await event.client(UpdateProfileRequest(first_name=name))
         await asyncio.sleep(60)
 
