@@ -19,7 +19,7 @@ import time
 
 from telethon.tl.functions.account import UpdateProfileRequest
 
-from .. import JmdB, jmubot, Tepthon_cmd, status
+from .. import JmdB, jmubot, Tepthon_cmd
 
 USERBIO = JmdB.get_key("MYBIO") or "اللهم صلِّ على سيدنا وعلى آله وصحبه أجمعين"
 NAME = JmdB.get_key("NAME")
