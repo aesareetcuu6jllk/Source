@@ -2,6 +2,7 @@ from telethon import events
 from datetime import datetime
 import asyncio
 import pickle 
+import Tepthon_cmd
 
 afk_mode = False   
 custom_reply = "أنا لست موجودًا الآن، أرجوك اترك رسالتك وانتظر لحين عودتي."
