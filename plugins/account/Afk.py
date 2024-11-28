@@ -5,11 +5,9 @@ from telethon.tl import functions, types
 
 from .. import JmdB, jmubot, Tepthon_cmd
 
-from ..Config import Config
-from ..core.logger import logging
-from ..core.managers import edit_delete, edit_or_reply
-from ..helpers.tools import media_type
-from ..helpers.utils import _format
+from Teothon.Config import Config
+from Tepthon.core.logger import logging
+from Tepthon.core.managers import edit_delete, edit_or_reply
 from . import BOTLOG, BOTLOG_CHATID
 
 LOGS = logging.getLogger(__name__)
