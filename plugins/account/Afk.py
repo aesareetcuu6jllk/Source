@@ -5,7 +5,6 @@ from telethon.tl import functions, types
 
 from .. import JmdB, jmubot, Tepthon_cmd
 
-from Tepthon.Config import Config
 from Tepthon.core.managers import edit_delete, edit_or_reply
 from . import BOTLOG, BOTLOG_CHATID
 
