@@ -1,215 +1,250 @@
-from telethon import events
-from datetime import datetime
 import asyncio
-import pickle 
-import 
+from datetime import datetime
 
-afk_mode = False   
-custom_reply = "أنا لست موجودًا الآن، أرجوك اترك رسالتك وانتظر لحين عودتي."
-reply_to_message = None
-custom_replies = {}  
-custom_replies_enabled = False  
-allowed_chats = set()
+from telethon.tl import functions, types
 
-try:
-    with open('custom_replies.pickle', 'rb') as f:
-        custom_replies = pickle.load(f)
-except FileNotFoundError:
-    pass
+from .. import JmdB, jmubot, Tepthon_cmd
 
-@events.register(events.NewMessage(outgoing=True, pattern=r'^\.كليشة الرد$'))
-async def set_reply_template(event):
-    global reply_to_message
-    reply_to_message = await event.get_reply_message()
-    if reply_to_message:
-        await event.edit(f"تم تعيين كليشة الرد إلى الرسالة المحددة.")
-    else:
-        await event.edit("يرجى الرد على الرسالة التي تريد استخدامها ككليشة.")
-    await asyncio.sleep(2)
-    await event.delete()
+from ..Config import Config
+from ..core.logger import logging
+from ..core.managers import edit_delete, edit_or_reply
+from ..helpers.tools import media_type
+from ..helpers.utils import _format
+from . import BOTLOG, BOTLOG_CHATID
 
-@events.register(events.NewMessage(outgoing=True, pattern=r'^\.رد (.*)'))
-async def add_custom_reply(event):
-    global custom_replies
-    reply_to_message = await event.get_reply_message()
-    if reply_to_message:
-        trigger_text = reply_to_message.raw_text
-        reply_text = event.pattern_match.group(1).strip()
-        if len(custom_replies) < 20:
-            custom_replies[trigger_text] = reply_text
-            with open('custom_replies.pickle', 'wb') as f:
-                pickle.dump(custom_replies, f)
-            await event.edit(f"تم إضافة الرد المخصص بنجاح. لديك الآن {len(custom_replies)} ردود مخصصة.")
+LOGS = logging.getLogger(__name__)
+
+
+class AFK:
+    def __init__(self):
+        self.USERAFK_ON = {}
+        self.afk_time = None
+        self.last_afk_message = {}
+        self.afk_star = {}
+        self.afk_end = {}
+        self.reason = None
+        self.msg_link = False
+        self.afk_type = None
+        self.media_afk = None
+        self.afk_on = False
+
+
+AFK_ = AFK()
+
+
+@Tepthon_cmd(outgoing=True, edited=False)
+async def set_not_afk(event):
+    if AFK_.afk_on is False:
+        return
+    back_alive = datetime.now()
+    AFK_.afk_end = back_alive.replace(microsecond=0)
+    if AFK_.afk_star != {}:
+        total_afk_time = AFK_.afk_end - AFK_.afk_star
+        time = int(total_afk_time.seconds)
+        d = time // (24 * 3600)
+        time %= 24 * 3600
+        h = time // 3600
+        time %= 3600
+        m = time // 60
+        time %= 60
+        s = time
+        endtime = ""
+        if d > 0:
+            endtime += f"{d} يوم {h} ساعة {m} دقيقة {s} ثانية"
+        elif h > 0:
+            endtime += f"{h} ساعة {m} دقيقة {s} ثانية"
         else:
-            await event.edit("لقد وصلت إلى الحد الأقصى للردود المخصصة (20).")
-    else:
-        await event.edit("يرجى الرد على الرسالة التي تريد إضافة رد مخصص لها.")
-    await asyncio.sleep(2)
-    await event.delete()
+            endtime += f"{m} دقيقة {s} ثانية" if m > 0 else f"{s} ثانية"
+    current_message = event.message.message
+    if (("afk" not in current_message) or ("#afk" not in current_message)) and (
+        "on" in AFK_.USERAFK_ON
+    ):
+        shite = await event.client.send_message(
+            event.chat_id,
+            "**الان اعمل بشكل طبيعي\nلقد كان امر السيلب مفعل منذ " + endtime + "**",
+        )
+        AFK_.USERAFK_ON = {}
+        AFK_.afk_time = None
+        await asyncio.sleep(5)
+        await shite.delete()
+        AFK_.afk_on = False
+        if BOTLOG:
+            await event.client.send_message(
+                BOTLOG_CHATID,
+                "⌔∮ انتهاء امر السليب \n"
+                + "**⌔∮ تم تعطيله والرجوع للوضع الطبيعي كان مفعل لـ"
+                + endtime
+                + "**",
+            )
 
-        trigger_text = reply_to_message.raw_text
-        if trigger_text in custom_replies:
-            del custom_replies[trigger_text]
-            with open('custom_replies.pickle', 'wb') as f:
-                pickle.dump(custom_replies, f)
-            await event.edit("تم حذف الرد المخصص بنجاح.")
+
+@Tepthon_cmd(
+    incoming=True, func=lambda e: bool(e.mentioned or e.is_private), edited=False
+)
+async def on_afk(event):
+    if AFK_.afk_on is False:
+        return
+    back_alivee = datetime.now()
+    AFK_.afk_end = back_alivee.replace(microsecond=0)
+    if AFK_.afk_star != {}:
+        total_afk_time = AFK_.afk_end - AFK_.afk_star
+        time = int(total_afk_time.seconds)
+        d = time // (24 * 3600)
+        time %= 24 * 3600
+        h = time // 3600
+        time %= 3600
+        m = time // 60
+        time %= 60
+        s = time
+        endtime = ""
+        if d > 0:
+            endtime += f"{d} ايام {h} ساعات {m} دقائق {s} ثانية"
+        elif h > 0:
+            endtime += f"{h} ساعة {m} دقائق {s} ثانية"
         else:
-            await event.edit("لم يتم العثور على رد مخصص لهذه الرسالة.")
-    else:
-        await event.edit("يرجى الرد على الرسالة التي تريد حذف ردها المخصص.")
-    await asyncio.sleep(2)
-    await event.delete()
-
-@events.register(events.NewMessage)
-async def reply_handler(event):
-    global afk_mode, custom_replies, custom_replies_enabled
-    if (afk_mode or custom_replies_enabled) and event.is_private:
-        me = await event.client.get_me()
-        sender = await event.get_sender()
-        if sender.id != me.id and not sender.bot:
-            if custom_replies_enabled:
-                for trigger, reply in custom_replies.items():
-                    if trigger in event.raw_text:  
-                        await event.reply(reply)
-                        break  
-            if afk_mode:  
-                if not event.raw_text in custom_replies:  
-                    if reply_to_message:
-                        await event.reply(reply_to_message)
-                    else:
-                        await event.reply(custom_reply)
-
-@events.register(events.NewMessage(outgoing=True, pattern=r'^\.سماح$'))
-async def allow_chat(event):
-    if event.is_private:
-        allowed_chats.add(event.chat_id)
-        await event.edit("تم السماح لهذه المحادثة.")
-    else:
-        await event.edit("لا يمكن استخدام هذا الأمر إلا في المحادثات الخاصة.")
-    await asyncio.sleep(2)
-    await event.delete()
-
-@events.register(events.NewMessage(outgoing=True, pattern=r'^\.الغاء السماح$'))
-async def disallow_chat(event):
-    if event.is_private:
-        allowed_chats.discard(event.chat_id)
-        await event.edit("تم إلغاء السماح لهذه المحادثة.")
-    else:
-        await event.edit("لا يمكن استخدام هذا الأمر إلا في المحادثات الخاصة.")
-    await asyncio.sleep(2)
-    await event.delete()
-
-
-
-last_reply_sent = None
-
-@events.register(events.NewMessage)
-async def reply_handler(event):
-    global afk_mode, custom_replies, custom_replies_enabled, last_reply_sent
-    if (afk_mode or custom_replies_enabled) and event.is_private and event.chat_id not in allowed_chats:
-        me = await event.client.get_me()
-        sender = await event.get_sender()
-        if sender.id != me.id and not sender.bot:
-            if custom_replies_enabled:
-                for trigger, reply in custom_replies.items():
-                    if trigger in event.raw_text:
-                        await event.reply(reply)
-                        break
-            if afk_mode:
-                if not event.raw_text in custom_replies:
-                    if reply_to_message:
-                        reply_text = reply_to_message.text
-                        reply = await event.reply(reply_to_message)
-                        if last_reply_sent and last_reply_sent.text == reply_text:
-                            await last_reply_sent.delete()
-                        last_reply_sent = reply
-                    else:
-                        reply = await event.reply(custom_reply)
-                        if last_reply_sent and last_reply_sent.text == custom_reply:
-                            await last_reply_sent.delete()
-                        last_reply_sent = reply
-async def delete_custom_reply(event):
-    global custom_replies
-    reply_to_message = await event.get_reply_message()
-    if reply_to_message:
-        trigger_text = reply_to_message.raw_text
-        if trigger_text in custom_replies:
-            del custom_replies[trigger_text]
-            with open('custom_replies.pickle', 'wb') as f:
-                pickle.dump(custom_replies, f)
-            await event.edit("تم حذف الرد المخصص بنجاح.")
+            endtime += f"{m} دقائق {s} ثانية" if m > 0 else f"{s} من الثواني"
+    current_message_text = event.message.message.lower()
+    if "مؤقت" in current_message_text or "#afk" in current_message_text:
+        return False
+    if not await event.get_sender():
+        return
+    if AFK_.USERAFK_ON and not (await event.get_sender()).bot:
+        msg = None
+        if AFK_.afk_type == "media":
+            if AFK_.reason:
+                message_to_reply = f"⪼ انا الان في حالة عدم الاتصال منذ\n{endtime}\nالسبب : {AFK_.reason}"
+            else:
+                message_to_reply = f"⪼ انا الان في حالة عدم الاتصال منذ\n{endtime}"
+            if event.chat_id:
+                msg = await event.reply(message_to_reply, file=AFK_.media_afk.media)
+        elif AFK_.afk_type == "text":
+            if AFK_.msg_link and AFK_.reason:
+                message_to_reply = f"⪼ انا الان في حالة عدم الاتصال منذ .\n\n{endtime}\nالسبب : {AFK_.reason}"
+            elif AFK_.reason:
+                message_to_reply = f"⪼انا الان في حالة عدم الاتصال منذ .\n\n{endtime}\nالسبب : {AFK_.reason}"
+            else:
+                message_to_reply = f"⪼ انا الان في حالة عدم الاتصال منذ.\n\n{endtime}"
+            if event.chat_id:
+                msg = await event.reply(message_to_reply)
+        if event.chat_id in AFK_.last_afk_message:
+            await AFK_.last_afk_message[event.chat_id].delete()
+        AFK_.last_afk_message[event.chat_id] = msg
+        if event.is_private:
+            return
+        hmm = await event.get_chat()
+        if Config.PM_LOGGER_GROUP_ID == -100:
+            return
+        full = None
+        try:
+            full = await event.client.get_entity(event.message.from_id)
+        except Exception as e:
+            LOGS.info(str(e))
+        messaget = media_type(event)
+        resalt = f" \n<b>المجموعة : </b><code>{hmm.title}</code>"
+        if full is not None:
+            resalt += f"\n<b>المرسل : </b> {_format.htmlmentionuser(full.first_name , full.id)}"
+        if messaget is not None:
+            resalt += f"\n<b>نوع الرسالة : </b><code>{messaget}</code>"
         else:
-            await event.edit("لم يتم العثور على رد مخصص لهذه الرسالة.")
-    else:
-        await event.edit("يرجى الرد على الرسالة التي تريد حذف ردها المخصص.")
-    await asyncio.sleep(2)
-    await event.delete()
-
-@events.register(events.NewMessage)
-async def reply_handler(event):
-    global afk_mode, custom_replies, custom_replies_enabled
-    if (afk_mode or custom_replies_enabled) and event.is_private:
-        me = await event.client.get_me()
-        sender = await event.get_sender()
-        if sender.id != me.id and not sender.bot:
-            if custom_replies_enabled:
-                for trigger, reply in custom_replies.items():
-                    if trigger in event.raw_text:  
-                        await event.reply(reply)
-                        break  
-            if afk_mode:  
-                if not event.raw_text in custom_replies:  
-                    if reply_to_message:
-                        await event.reply(reply_to_message)
-                    else:
-                        await event.reply(custom_reply)
-
-@Tepthon_cmd(pattern="رد تلقائي$")
-async def allow_chat(event):
-    if event.is_private:
-        allowed_chats.add(event.chat_id)
-        await event.edit("تم السماح لهذه المحادثة.")
-    else:
-        await event.edit("لا يمكن استخدام هذا الأمر إلا في المحادثات الخاصة.")
-    await asyncio.sleep(2)
-    await event.delete()
-
-@events.register(events.NewMessage(outgoing=True, pattern=r'^\.الغاء السماح$'))
-async def disallow_chat(event):
-    if event.is_private:
-        allowed_chats.discard(event.chat_id)
-        await event.edit("تم إلغاء السماح لهذه المحادثة.")
-    else:
-        await event.edit("لا يمكن استخدام هذا الأمر إلا في المحادثات الخاصة.")
-    await asyncio.sleep(2)
-    await event.delete()
+            resalt += f"\n<b>الرسالة : </b>{event.message.message}"
+        resalt += f"\n<b>رابط الرسالة: </b><a href = 'https://t.me/c/{hmm.id}/{event.message.id}'> الرابط</a>"
+        if not event.is_private:
+            await event.client.send_message(
+                Config.PM_LOGGER_GROUP_ID,
+                resalt,
+                parse_mode="html",
+                link_preview=False,
+            )
 
 
+@Tepthon_cmd(pattern="سليب(?:\s|$)([\s\S]*)")
+async def _(event):
+    AFK_.USERAFK_ON = {}
+    AFK_.afk_time = None
+    AFK_.last_afk_message = {}
+    AFK_.afk_end = {}
+    AFK_.afk_type = "text"
+    start_1 = datetime.now()
+    AFK_.afk_on = True
+    AFK_.afk_star = start_1.replace(microsecond=0)
+    if not AFK_.USERAFK_ON:
+        input_str = event.pattern_match.group(1)
+        if ";" in input_str:
+            msg, mlink = input_str.split(";", 1)
+            AFK_.reason = f"[{msg.strip()}]({mlink.strip()})"
+            AFK_.msg_link = True
+        else:
+            AFK_.reason = input_str
+            AFK_.msg_link = False
+        last_seen_status = await event.client(
+            functions.account.GetPrivacyRequest(types.InputPrivacyKeyStatusTimestamp())
+        )
+        if isinstance(last_seen_status.rules, types.PrivacyValueAllowAll):
+            AFK_.afk_time = datetime.now()
+        AFK_.USERAFK_ON = f"on: {AFK_.reason}"
+        if AFK_.reason:
+            await edit_delete(
+                event, f"⪼ انا الان في حالة عدم الاتصال بسبب\n{AFK_.reason}", 5
+            )
+        else:
+            await edit_delete(event, "⪼ انا الان في حالة عدم الاتصال", 5)
+        if BOTLOG:
+            if AFK_.reason:
+                await event.client.send_message(
+                    BOTLOG_CHATID,
+                    f"⪼ وضع السليب \nتم تشغيل وضع السليب، والسبب هو \n{AFK_.reason}",
+                )
+            else:
+                await event.client.send_message(
+                    BOTLOG_CHATID,
+                    "⪼ وضع السليب \nتم تشغيل وضع السليب، بدون ذكر اي سبب",
+                )
 
-last_reply_sent = None
 
-@events.register(events.NewMessage)
-async def reply_handler(event):
-    global afk_mode, custom_replies, custom_replies_enabled, last_reply_sent
-    if (afk_mode or custom_replies_enabled) and event.is_private and event.chat_id not in allowed_chats:
-        me = await event.client.get_me()
-        sender = await event.get_sender()
-        if sender.id != me.id and not sender.bot:
-            if custom_replies_enabled:
-                for trigger, reply in custom_replies.items():
-                    if trigger in event.raw_text:
-                        await event.reply(reply)
-                        break
-            if afk_mode:
-                if not event.raw_text in custom_replies:
-                    if reply_to_message:
-                        reply_text = reply_to_message.text
-                        reply = await event.reply(reply_to_message)
-                        if last_reply_sent and last_reply_sent.text == reply_text:
-                            await last_reply_sent.delete()
-                        last_reply_sent = reply
-                    else:
-                        reply = await event.reply(custom_reply)
-                        if last_reply_sent and last_reply_sent.text == custom_reply:
-                            await last_reply_sent.delete()
-                        last_reply_sent = reply
+@Tepthon_cmd(pattern="سليب_ميديا(?:\s|$)([\s\S]*)")
+async def _(event):
+    reply = await event.get_reply_message()
+    media_t = media_type(reply)
+    if media_t == "Sticker" or not media_t:
+        return await edit_or_reply(
+            event, "⪼ امر السليب : الرجاء قم بالرد على الصورة بالامر "
+        )
+    if not BOTLOG:
+        return await edit_or_reply(
+            event, "⪼ لإستخدام هذا الامر يجب اضافة متغير PRIVATE_GROUP_BOT_API_ID "
+        )
+    AFK_.USERAFK_ON = {}
+    AFK_.afk_time = None
+    AFK_.last_afk_message = {}
+    AFK_.afk_end = {}
+    AFK_.media_afk = None
+    AFK_.afk_type = "media"
+    start_1 = datetime.now()
+    AFK_.afk_on = True
+    AFK_.afk_star = start_1.replace(microsecond=0)
+    if not AFK_.USERAFK_ON:
+        input_str = event.pattern_match.group(1)
+        AFK_.reason = input_str
+        last_seen_status = await event.client(
+            functions.account.GetPrivacyRequest(types.InputPrivacyKeyStatusTimestamp())
+        )
+        if isinstance(last_seen_status.rules, types.PrivacyValueAllowAll):
+            AFK_.afk_time = datetime.now()
+        AFK_.USERAFK_ON = f"on: {AFK_.reason}"
+        if AFK_.reason:
+            await edit_delete(
+                event, f"⪼ انا الان في حالة عدم الاتصال بسبب\n{AFK_.reason}", 5
+            )
+        else:
+            await edit_delete(event, "انا الان في حالة عدم الاتصال", 5)
+        AFK_.media_afk = await reply.forward_to(BOTLOG_CHATID)
+        if AFK_.reason:
+            await event.client.send_message(
+                BOTLOG_CHATID,
+                f"⪼ وضع السليب \nتم تشغيل وضع السليب، والسبب هو \n{AFK_.reason}",
+            )
+        else:
+            await event.client.send_message(
+                BOTLOG_CHATID,
+                "⪼ وضع السليب \nتم تشغيل وضع السليب، بدون ذكر اي سبب",
+            )
