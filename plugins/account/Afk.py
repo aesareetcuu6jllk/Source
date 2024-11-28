@@ -2,7 +2,7 @@ from telethon import events
 from datetime import datetime
 import asyncio
 import pickle 
-import Tepthon_cmd
+import 
 
 afk_mode = False   
 custom_reply = "أنا لست موجودًا الآن، أرجوك اترك رسالتك وانتظر لحين عودتي."
@@ -16,31 +16,6 @@ try:
         custom_replies = pickle.load(f)
 except FileNotFoundError:
     pass
-
-@Tepthon_cmd(pattern="تشغيل الرد$")
-async def enable_afk(event):
-    global afk_mode
-    afk_mode = True
-    await event.edit("تم تشغيل الرد التلقائي.")
-    await asyncio.sleep(2)
-    await event.delete()
-
-@Tepthon_cmd(pattern="المخصص تشغيل$")
-async def enable_custom_replies(event):
-    global custom_replies_enabled
-    custom_replies_enabled = True
-    await event.edit("تم تشغيل الردود المخصصة.")
-    await asyncio.sleep(2)
-    await event.delete()
-
-@Tepthon_cmd(pattern="تعطيل الرد$")
-async def disable_replies(event):
-    global afk_mode, custom_replies_enabled
-    afk_mode = False
-    custom_replies_enabled = False
-    await event.edit("تم تعطيل الرد التلقائي والردود المخصصة.")
-    await asyncio.sleep(2)
-    await event.delete()
 
 @events.register(events.NewMessage(outgoing=True, pattern=r'^\.كليشة الرد$'))
 async def set_reply_template(event):
@@ -72,84 +47,6 @@ async def add_custom_reply(event):
     await asyncio.sleep(2)
     await event.delete()
 
-from telethon import events
-from datetime import datetime
-import asyncio
-import pickle 
-
-afk_mode = False   
-custom_reply = "أنا لست موجودًا الآن، أرجوك اترك رسالتك وانتظر لحين عودتي."
-reply_to_message = None
-custom_replies = {}  
-custom_replies_enabled = False  
-allowed_chats = set()
-
-try:
-    with open('custom_replies.pickle', 'rb') as f:
-        custom_replies = pickle.load(f)
-except FileNotFoundError:
-    pass
-
-@events.register(events.NewMessage(outgoing=True, pattern=r'^\.تشغيل الرد$'))
-async def enable_afk(event):
-    global afk_mode
-    afk_mode = True
-    await event.edit("تم تشغيل الرد التلقائي.")
-    await asyncio.sleep(2)
-    await event.delete()
-
-@events.register(events.NewMessage(outgoing=True, pattern=r'^\.المخصص تشغيل$'))
-async def enable_custom_replies(event):
-    global custom_replies_enabled
-    custom_replies_enabled = True
-    await event.edit("تم تشغيل الردود المخصصة.")
-    await asyncio.sleep(2)
-    await event.delete()
-
-@events.register(events.NewMessage(outgoing=True, pattern=r'^\.تعطيل الرد$'))
-async def disable_replies(event):
-    global afk_mode, custom_replies_enabled
-    afk_mode = False
-    custom_replies_enabled = False
-    await event.edit("تم تعطيل الرد التلقائي والردود المخصصة.")
-    await asyncio.sleep(2)
-    await event.delete()
-
-@events.register(events.NewMessage(outgoing=True, pattern=r'^\.كليشة الرد$'))
-async def set_reply_template(event):
-    global reply_to_message
-    reply_to_message = await event.get_reply_message()
-    if reply_to_message:
-        await event.edit(f"تم تعيين كليشة الرد إلى الرسالة المحددة.")
-    else:
-        await event.edit("يرجى الرد على الرسالة التي تريد استخدامها ككليشة.")
-    await asyncio.sleep(2)
-    await event.delete()
-
-@events.register(events.NewMessage(outgoing=True, pattern=r'^\.رد (.*)'))
-async def add_custom_reply(event):
-    global custom_replies
-    reply_to_message = await event.get_reply_message()
-    if reply_to_message:
-        trigger_text = reply_to_message.raw_text
-        reply_text = event.pattern_match.group(1).strip()
-        if len(custom_replies) < 20:
-            custom_replies[trigger_text] = reply_text
-            with open('custom_replies.pickle', 'wb') as f:
-                pickle.dump(custom_replies, f)
-            await event.edit(f"تم إضافة الرد المخصص بنجاح. لديك الآن {len(custom_replies)} ردود مخصصة.")
-        else:
-            await event.edit("لقد وصلت إلى الحد الأقصى للردود المخصصة (20).")
-    else:
-        await event.edit("يرجى الرد على الرسالة التي تريد إضافة رد مخصص لها.")
-    await asyncio.sleep(2)
-    await event.delete()
-
-@events.register(events.NewMessage(outgoing=True, pattern=r'^\.حذف رد$'))
-async def delete_custom_reply(event):
-    global custom_replies
-    reply_to_message = await event.get_reply_message()
-    if reply_to_message:
         trigger_text = reply_to_message.raw_text
         if trigger_text in custom_replies:
             del custom_replies[trigger_text]
