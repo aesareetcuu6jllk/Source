@@ -71,7 +71,7 @@ def get_doc_from_module(name, type=""):
     if mod := _get_module(name, type):
         if not mod.__doc__:
             return get_from_funcs(mod, name)
-        msg = f"**⎆ أوامـر سورس تيبثـون المتاحة في قائمـة {name}**\n\n"
+        msg = f"**⎆ أوامـر سورس  HELLAS  المتاحة في قائمـة {name}**\n\n"
         msg += mod.__doc__.format(i=HNDLR)
         msg += "\n ©️ @Tepthon"
         return msg
@@ -88,10 +88,10 @@ def get_from_funcs(mod, name):
     )
     if not funcs:
         return False
-    msg = f"**⎆ أوامـر سورس تيبثـون المتاحة في قائمـة {name}**"
+    msg = f"**⎆ أوامـر سورس HELLAS المتاحة في قائمـة {name}**"
     for cmd in funcs:
         msg += f"\n\n• {cmd[1].__doc__.format(*list(HNDLR*len(funcs)))}"
-    msg += "\n ©️ @Tepthon"
+    msg += "\n ©️ @SourceHELLAS"
     return msg
 
 DEF_CONFIG = {"plugins": {}, "helpers": {}, "manager": {}}
@@ -105,7 +105,7 @@ def get_doc(module, type=""):
         return msg
     _get_info = get_info(module)
     if _get_info and (cmds := _get_info.get("cmds")):
-        msg = f"**⎆ أوامـر سورس تيبثـون المتاحة في قائمـة {module}**"
+        msg = f"**⎆ أوامـر سورس HELLAS المتاحة في قائمـة {module}**"
         for cmd in cmds:
             msg += f"\n\n• `{HNDLR}{cmd}`\n {cmds[cmd]}"
     elif help := CMD_HELP.get(module):
@@ -116,7 +116,7 @@ def get_doc(module, type=""):
         for cmd in help:
             msg += f"- \n{HNDLR}{cmd}\n"
     if msg:
-        msg += "\n ©️ @Tepthon"
+        msg += "\n ©️ @SourceHELLAS"
     return msg
 
 @Tepthon_cmd("الاوامر($| (.*))")
@@ -152,7 +152,7 @@ async def inline_handler(event):
         )
     else:
         result = await event.builder.article(
-            title="**⎆ قائمـة أوامر سورس تيبثـون:**", text=text, buttons=get_help_buttons()
+            title="**⎆ قائمـة أوامر سورس HELLAS:**", text=text, buttons=get_help_buttons()
         )
     await event.answer([result], private=True, cache_time=300, gallery=True)
 
@@ -177,7 +177,7 @@ async def help_func(moh):
 @callback(data="open", owner=True)
 async def opner(event):
     await event.edit(
-        "**⎆ القائمة الرئيسية لـ أوامر سورس تيبـثون**\n**⎆ مالك الحساب هو: {}.\n⎆ عدد القوائم الموجودة: {}**".format( 
+        "**⎆ القائمة الرئيسية لـ أوامر  السورس   **\n**⎆ مالك الحساب هو: {}.\n⎆ عدد القوائم الموجودة: {}**".format( 
             jmubot.full_name,
             len(PLUGINS),
         ),
@@ -267,7 +267,7 @@ async def uptd_plugin(event):
     help_ = get_doc(file, key)
     if not help_:
         help_ = f"**⎆ القائمة {file} لا تحتـوي على شرح في قائمة المساعدة حاليًّــا**"
-        help_ += "\n© @Tepthon"
+        help_ += "\n© @SourceHELLAS"
     buttons = []
     data = f"get_{key}_"
     if index is not None:
