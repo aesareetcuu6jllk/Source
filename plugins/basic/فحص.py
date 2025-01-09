@@ -24,7 +24,7 @@ from .. import *
 
 buttons = [
     [
-        Button.url("مجموعة المساعدة", "t.me/GRUB-HELLAS"),
+        Button.url("مجموعة المساعدة", "t.me/GRUB_HELLAS"),
         Button.url("قناة السورس", "t.me/SourceHELLAS"),
     ]
 ]
