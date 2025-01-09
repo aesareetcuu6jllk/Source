@@ -35,7 +35,7 @@ async def setit(event, name, value):
 
 _buttons = {
     "otvars": {
-        "text": "⎆ من هنا يمكنك تعديل المتغيرات/الفارات الخاصة بسورس تيبثون",
+        "text": "⎆ من هنا يمكنك تعديل المتغيرات/الفارات الخاصة بسورس HELLAS",
         "buttons": [
             [
                 Button.inline("كروب التخزين", data="taglog"),
