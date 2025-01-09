@@ -24,8 +24,8 @@ from .. import *
 
 buttons = [
     [
-        Button.url("مجموعة المساعدة", "t.me/Tepthon_Support"),
-        Button.url("قناة السورس", "t.me/Tepthon"),
+        Button.url("مجموعة المساعدة", "t.me/GRUB-HELLAS"),
+        Button.url("قناة السورس", "t.me/SourceHELLAS"),
     ]
 ]
 
