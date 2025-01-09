@@ -42,7 +42,7 @@ def get_start_message():
 
 **❃ نظام التواصل**: {JmdB.get_key("PMBOT")}
 
-**❃ سورس تيبثون: [v{version}] ، @Tepthon**
+**❃ سورس HELLAS: [v{version}] ، @SourceHELLAS**
 """
     return Owner_info_msg, _custom
 
