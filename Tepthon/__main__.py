@@ -20,13 +20,13 @@ if not jmubot.me.bot:
     jmdB.set_key("NAME", jmubot.full_name)
 
 
-LOGS.info("جاري تثبيت تيبثون...")
+LOGS.info("جاري تثبيت سورس HELLAS...")
 
 
 try:
     LOGS.info("- يتم إعـداد الإعدادات .......")
     jmubot.loop.run_until_complete(main_process())
-    LOGS.info("تم إعداد إعدادات تيبثون ✅")
+    LOGS.info("تم إعداد إعدادات سورس HELLAS ✅")
 except Exception as meo:
     LOGS.error(f"- {meo}")
     sys.exit()
@@ -39,13 +39,13 @@ async def load_plugins():
 jmubot.run_in_loop(load_plugins())
 
 
-LOGS.info(f"⏳ تم استغراق {time_formatter((time.time() - start_time) * 1000)} ميللي ثانية لبدء تشغيل سورس تيبثون.")
+LOGS.info(f"⏳ تم استغراق {time_formatter((time.time() - start_time) * 1000)}  HELLAS ميللي ثانية لبدء تشغيل سورس.")
 
 LOGS.info(
     """
     ╔══════════════════════════════════════════╗
-    ║       ✅ تم تنصيب وتشغيل سورس تيبثون بنجاح             ║ 
-    ║       تابع آخر التحديثات من خلال قناة @Tepthon            ║
+    ║       ✅ تم تنصيب وتشغيل سورس HELLAS بنجاح             ║ 
+    ║       تابع آخر التحديثات من خلال قناة @SourceHELLAS            ║
     ╚══════════════════════════════════════════╝
     """
 )
@@ -53,7 +53,7 @@ LOGS.info(
     
 try:
     asst.run()
-    LOGS.info(f"تم بنجاح تشغيل البوت المساعد من @Tepthon")
+    LOGS.info(f"تم بنجاح تشغيل البوت المساعد من @SourceHELLAS")
 except SessionRevokedError:
     LOGS.info(f"جلسة البوت المساعد [@{asst.me.username}] فشلت لكن سيتم تشغيل سورس الحساب فقط")
     jmubot.run()
